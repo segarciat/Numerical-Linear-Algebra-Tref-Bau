@@ -1,0 +1,344 @@
+ % --------------------------------------------------------------
+% Based on a homework template by Dana Ernst (MTH320 Homework
+% template on Overleaf).
+% --------------------------------------------------------------
+
+\documentclass[12pt]{article}
+
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+% https://tex.stackexchange.com/questions/146306/how-to-make-horizontal-lists
+\usepackage[inline]{enumitem} % allows using letters in enumerate list environment
+\usepackage[mathscr]{euscript}
+% source: https://stackoverflow.com/questions/3175105/inserting-code-in-this-latex-document-with-indentation
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+	language=C, % language for code listing
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=4
+}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newenvironment{ex}[2][Exercise]{\begin{trivlist}
+		\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\newenvironment{sol}[1][Solution]{\begin{trivlist}
+		\item[\hskip \labelsep {\bfseries #1:}]}{\end{trivlist}}
+
+
+\begin{document}
+
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+
+\noindent Sergio Garcia Tapia \hfill
+
+\noindent{\small Numerical Linear Algebra, Lloyd Trefethen and David Bau III} \hfill 
+
+\noindent{\small Lecture 3: Norms} \hfill 
+
+\noindent\today
+\section*{Lecture 3: Norms}
+
+\begin{ex}{1}
+	Prove that if $W$ is an arbitrary nonsingular matrix, the function $\lVert\cdot \rVert_W$
+	defined by (3.3) is a vector norm.
+\end{ex}
+
+\begin{sol}
+	\
+	\begin{proof}
+		Suppose $\lVert \cdot \rVert$ be any norm, and let $x\in \mathbb{C}^m$. Since $W$ is
+		nonsingular, we know that $Wx=0$ if and only if $x=0$. Thus, $\lVert x\rVert_w = \lVert Wx\rVert$
+		is 0 if and only $x=0$, and otherwise $x$ is positive.
+		
+		\
+		Suppose $y$ is another vector in $\mathbb{C}^m$. Then
+		\begin{align*}
+			\lVert x + y\rVert_W &=\lVert W(x + y)\rVert\\
+			&=\lVert Wx + Wy\rVert\\
+			&\leq \lVert Wx\rVert + \lVert Wy\rVert\\
+			&=\lVert x\rVert_W + \lVert y\rVert_W
+		\end{align*}
+		where the second equality follows from the fact that $W$, and the inequality follows
+		because $\lVert \cdot\rVert$ is a norm so it satisfies the triangle inequality. We conclude
+		that $\lVert \cdot \rVert_W$ also satisfies the triangle inequality. Finally, if
+		$\alpha\in \mathbb{C}$, then
+		\[
+		\lVert \alpha x\rVert_W = \lVert \alpha Wx\rVert = |\alpha| \cdot \lVert Wx\rVert = |\alpha|\cdot \lVert x\rVert_W
+		\]
+		so that scaling a vector scales a norm by the same amount. Thus, the weighted norm
+		$\lVert \cdot \rVert_W$ is indeed a norm for every nonsingular $W$.
+	\end{proof}
+\end{sol}
+
+\begin{ex}{3.2}
+	Let $\lVert \cdot \rVert$ denote any norm on $\mathbb{C}^m$ and also the induced matrix norm
+	on $\mathbb{C}^{m\times m}$. Show that $\rho(A)\leq \lVert A\rVert$, where $\rho(A)$ is the
+	\emph{spectral radius} of $A$, i.e., the largest absolute value $|\lambda|$ of an eigenvalue
+	$\lambda$ of $A$.
+\end{ex}
+
+\begin{proof}
+	Let $\lambda$ be the eigenvalue of $A$ with largest absolute value, and let $u$ be an
+	associated eigenvector of unit length, i.e., $\lVert u\rVert=1$. By definition of
+	the induced matrix norm, we have
+	\[
+	\lVert A\rVert = \sup_{x\in \mathbb{C}^n, \lVert x\rVert=1}\lVert Ax\rVert
+	\]
+	Thus, if $\lVert x\rVert = 1$, we have $\lVert Ax\rVert \leq \lVert A\rVert$. Since
+	$u$ is a unit vector, we have
+	\begin{align*}
+		\rho(A) &= |\lambda|\cdot 1\\
+		&=|\lambda|\cdot \lVert u\rVert\\
+		&=\lVert Au\rVert\\
+		&\leq \lVert A\rVert
+	\end{align*}
+\end{proof}
+
+\begin{ex}{3.3}
+	Vector and matrix $p$-norms are related by various inequalities, often involving the dimensions
+	of $m$ and $n$. For each of the following, verify the inequality and give an example of a nonzero
+	vector or matrix (for general $m$, $n$) for which equality is achieved. In this problem, $x$ is
+	an $m$-vector and $A$ is an $m\times n$ matrix.
+	
+	\begin{enumerate}[label=(\alph*)]
+		\item $\lVert x\rVert_{\infty}\leq \lVert x\rVert_2$,
+		\item $\lVert x\rVert_2 \leq \sqrt{m}\lVert x\rVert_{\infty}$,
+		\item $\lVert A\rVert_{\infty}\leq \sqrt{n}\lVert A\rVert_2$,
+		\item $\lVert A\rVert_2 \leq \sqrt{m}\lVert A\rVert_\infty$.
+	\end{enumerate}
+\end{ex}
+
+\begin{sol}
+	\
+	Credit to \href{https://sites.science.oregonstate.edu/~restrepo/MTH451/HW/HW1Solution.pdf}{OSU}
+	for parts (c) and (d).
+	\begin{enumerate}[label=(\alph*)]
+		\item Suppose that $x\in \mathbb{C}^m$. Then $\lVert x\rVert_\infty=x_k$ for some
+		$k\in\{1,\ldots,m\}$, where $x_k$ denotes its $k$-th entry. Thus,
+		\begin{align*}
+			\lVert x\rVert_\infty^2 &= |x_k|^2 \leq \sum_{j=1}^{m}|x_{j}|^2=\lVert x\rVert_2^2
+		\end{align*}
+		Now we can take the square root, finishing verification. If $e_j$ is the $j$-th standard
+		basis vector of $\mathbb{C}^m$ and $c\in\mathbb{C}$, then we can achieve equality by
+		letting $x=c e_j$.
+		\item Let $x_j$ denote the $j$-th entry in $x\in\mathbb{C}^m$. Since
+		$|x_j|\leq \lVert x\rVert_{\infty}$ for all $j\in\{1,\ldots,m\}$, we have
+		\begin{align*}
+			\lVert x\rVert_2^2&=\sum_{j=1}^{m}|x_j|^2\leq \sum_{j=1}^{m}\lVert x\rVert_{\infty}^2
+			=m\lVert x\rVert_{\infty}^2
+		\end{align*}
+		After taking square roots, the verification is complete. Let $v$ be a vector whose every
+		entry is $1$, and let $c\in\mathbb{C}$. Then equality is achieved for $x=cv$, since
+		\begin{align*}
+			\lVert x\rVert_2 = \sqrt{\sum_{j=1}^{m}|c\cdot 1|^2}=\sqrt{m\cdot |c|^2} = \sqrt{m}\cdot |c|=\sqrt{m}\cdot \lVert x\rVert_\infty
+		\end{align*}
+		\item Assuming that the $2$-norm and $\infty$-norm here refer to induced matrix norms. Let
+		$u\in \mathbb{C}^n$. By (a), we know that $\lVert Ax\rVert_{\infty}\leq \lVert Ax\rVert_2$.
+		By (b), we know that $\lVert u\rVert_2 \leq \sqrt{n}\lVert u\rVert_{\infty}$, which if
+		$u\neq 0$ is equivalent to $\frac{1}{\lVert u\rVert_{\infty}}\leq \frac{\sqrt{n}}{\lVert u\rVert_2}$.
+		Thus, using the definition of the induced matrix norms, we get
+		\begin{align*}
+			\lVert A\rVert_{\infty} &= \sup_{u\in\mathbb{C}^n,u\neq 0}\frac{\lVert Au\rVert_{\infty}}{\lVert u\rVert_{\infty}}\\
+			&\leq \sup_{u\in\mathbb{C}^n,u\neq 0}\frac{\lVert Au\rVert_2}{\lVert u\rVert_{\infty}}\\
+			&\leq \sup_{u\in\mathbb{C}^n,u\neq 0}\sqrt{n}\cdot \frac{\lVert Au\rVert_2}{\lVert u\rVert_2}\\\\
+			&=\sqrt{n}\cdot \lVert A\rVert_2
+		\end{align*}
+		If we let $A$ be a matrix whose first row is all 1s, and every other entry is 0. Then the maximum
+		row sum of $A$ is $n$, so $\lVert A\rVert_{\infty}=\lVert a_1^*\rVert_1=n$. On the other hand, if
+		$u\in\mathbb{C}^n$, we have
+		\begin{align*}
+			\lVert Au\rVert_2&= |a_1^*u|\leq \lVert a_1^*\rVert_2\cdot \lVert u\rVert_2
+		\end{align*}
+		where $a_1^*$ denotes the first row of $A$. Hence, $\lVert A\rVert_2\leq \lVert a_1^*\rVert_2=\sqrt{n}$.
+		If $u$ is the $n$-vector of all 1s, then $\lVert Au\rVert_2 = n = \lVert u\rVert_2^2$, which implies
+		that the bound is attainable, and hence $\lVert A\rVert_2 = \lVert a_1^*\rVert_2$, so
+		\[
+		\sqrt{n}\cdot \lVert A\rVert_2 = \sqrt{n}\cdot \lVert a_1^*\rVert_2 = \sqrt{n}\cdot \sqrt{n}=n
+		=\lVert a_1^*\rVert_1=\lVert A\rVert_\infty
+		\]
+		
+		\item If $u\in \mathbb{C}^n$ is nonzero, by (b) we have $\lVert Ax\rVert_{2}\leq\sqrt{m}\lVert Ax\rVert_{\infty}$,
+		and by (a) we have $\frac{1}{\lVert u\rVert_2}\leq \frac{1}{\lVert u\rVert_{\infty}}$, so similar
+		to (c), we have
+		\begin{align*}
+			\lVert A\rVert_2&= \sup_{u\in\mathbb{C}^n,u\neq 0}\frac{\lVert Au\rVert_2}{\lVert u\rVert_2}\\
+			&\leq \sup_{u\in\mathbb{C}^n,u\neq 0}\frac{\sqrt{m}\lVert Au\rVert_\infty}{\lVert u\rVert_2}\\
+			&\leq \sup_{u\in\mathbb{C}^n,u\neq 0}\frac{\sqrt{m} \lVert Au\rVert_\infty}{\lVert u\rVert_\infty}\\
+			&=\sqrt{m}\cdot \lVert A\rVert_{\infty}
+		\end{align*}
+		Now to see an example where equality is achieved, let $A$ be a matrix of all 1s in the first column
+		and 0 otherwise. For such a matrix, the maximum matrix sum is $1$, so $\lVert A\rVert_{\infty}=1$.
+		If $u\in\mathbb{C}^n$ and $u_1$ is its first entry, then $Au = u_1\cdot a_1$, where $a_1$
+		is the first column of $A$. Since $a_1\in \mathbb{C}^m$, we have $\lVert a_1\rVert_2 = \sqrt{m}$. Thus
+		\[
+		\lVert Au\rVert_2 = |u_1|\cdot \sqrt{m}\leq \sqrt{m}\cdot \lVert u\rVert_2
+		\]
+		Thus $\lVert A\rVert_2\leq \sqrt{m}$. Since we can achieve equality by letting $u=e_1$, we
+		conclude that $\lVert A\rVert_2 = \sqrt{m}$. Thus,
+		\[
+		\lVert A\rVert_2 = \sqrt{m} \cdot 1 = \sqrt{m}\cdot \lVert A\rVert_{\infty}
+		\]
+	\end{enumerate}
+\end{sol}
+
+\begin{ex}{4}
+	Let $A$ be an $m\times n$ matrix and let $B$ be a submatrix of $A$, that is, a $\mu\times \nu$
+	matrix ($\mu\leq m$, $\nu\leq n$) obtained by selecting certain rows and columns of $A$.
+	\begin{enumerate}[label=(\alph*)]
+		\item Explain how $B$ can be obtained by multiplying $A$ by a certain row and column
+		``deletion matrices" as in step 7 of Exercise 1.1?
+		\item Using this product, show that $\lVert B\rVert_p\leq \lVert A\rVert_p$ for any $p$ with
+		$1\leq p\leq \infty$.
+	\end{enumerate}
+\end{ex}
+
+\begin{sol}
+	\
+	\begin{enumerate}[label=(\alph*)]
+		\item Suppose $j_1,\ldots,j_{\nu}$ are the indices of the columns of the submatrix $B$ of $A$.
+		Let $C$ be the $n\times n$ matrix whose entries are all $0$ except for the diagonal entries
+		$c_{j_q j_q}$, whose value is 1. where $j_q\{j_1,\ldots,j_{\nu}\}$. Then the matrix product $AC$
+		deletes the columns of interest all but columns $j_1,\ldots,j_\nu$. To delete rows of $AC$
+		we simply delete columns of $(AC)^T$. Let $i_1,\ldots,i_\mu$ are the rows we ought to keep.
+		Define $D$ to be the $m\times m$ matrix the matrix whose entries are all 0 except the diagonal		
+		entries $d_{i_p,i_p}$, where $i_p\in\{i_1,\ldots,i_\mu\}$. Then the matrix product $(AC)^TD$
+		deletes these columns from the transpose, and hence the product $D^T(AC)$ retains only
+		the rows of interest. Hence $B=D^TAC$.
+		\item \begin{proof}
+			By equation (3.14), we have
+			\begin{align*}
+				\lVert B\rVert_p&=\lVert D^T AC\rVert_p\\
+				&\leq \lVert D^T\rvert_p\cdot \lVert AC\rVert_p\\
+				&\leq \lVert D^T\rVert_p \cdot \lVert A\rVert_p\cdot \lVert C\rVert_p
+			\end{align*}
+			If $u\in\mathbb{C}^n$, then
+			\begin{align*}
+				\lVert Cu\rVert_p &= \lVert u_{j_1}e_{j_1}+\cdots+u_{j_\mu}e_{j_\mu}\rVert_p\leq \lVert u\rVert_p
+			\end{align*}
+			Thus $\lVert C\rVert_p\leq 1$, and similarly, $\lVert D^T\rVert_p\leq 1$. The result follows.
+		\end{proof}
+	\end{enumerate}
+\end{sol}
+
+\begin{ex}{5}
+	Example 3.6 shows that if $E$ is an outer product $E=uv^*$, then $\lVert E\rVert_2 = \lVert u\rVert_2\cdot
+	\lVert v\rVert_2$. Is the same true for the Frobenius norm, i.e., $\lVert E\rVert_F = \lVert u\rVert_F
+	\lVert v\rVert_F$? Prove it or give a counter example.
+\end{ex}
+
+\begin{sol}
+	\
+	\begin{proof}
+		The Frobenius norm for a vector in $\mathbb{C}^m$ is equivalent to the vector 2-norm. If
+		$E=uv^*$ is an outer product, then every column is a multiple of $u$ of the form $v_ju$, where
+		$v_j$ is the $j$-th entry in the vector $v$. Thus,
+		\begin{align*}
+			\lVert E\rVert_F &= \left(\sum_{j=1}^{n}\lVert v_j\cdot u\rVert_2^2\right)^{1/2}\\
+			&=\left(\lVert u\rVert_2^2\cdot \sum_{j=1}^{n}|v_j|^2\right)^{1/2}\\
+			&=\left(\lVert u\rVert_2^2\cdot \lVert v_j\rVert_2^2\right)^{1/2}\\
+			&=\lVert u\rVert_2\cdot \lVert v\rVert_2\\
+			&=\lVert u\rVert_F\cdot \lVert v\rVert_F
+		\end{align*}
+	\end{proof}
+\end{sol}
+
+\begin{ex}{6}
+	Let $\lVert\cdot \rVert$ denote any norm on $\mathbb{C}^m$. The corresponding \emph{dual norm}
+	$\lVert \cdot\rVert'$ is defined by the formula $\lVert x\rVert'=\sup_{\lVert y\rVert=1}|y^*x|$.
+	\begin{enumerate}[label=(\alph*)]
+		\item Prove that $\lVert \cdot \rVert'$ is a norm.
+		\item Let $x,y\in\mathbb{C}^m$ with $\lVert x\rVert = \lVert y\rVert =1$ be given. Show that there
+		exists a rank-one matrix $B=yz^*$ such that $Bx=y$ and $\lVert B\rVert = 1$, where $\lVert B\rVert$
+		is the matrix norm of $B$ induced by the vector norm $\lVert \cdot \rVert$. You may use the following
+		lemma, without proof: given $x\in \mathbb{C}^m$, there exists a nonzero $z\in\mathbb{C}^m$ such
+		that $|z^*x\rVert| = \lVert z\rVert'\cdot \lVert x\rVert$.
+	\end{enumerate}
+\end{ex}
+
+\begin{sol}
+	\
+	\begin{enumerate}[label=(\alph*)]
+		\item \begin{proof}
+			Suppose that $x,y\in\mathbb{C}^m$ with $\lVert y\rVert=1$. Then by definition of the supremum,
+			we have $|y^*x|\leq \lVert x\rVert'$. If $x=0$, then the supremum is 0. If $x\neq 0$, then picking
+			$y=\frac{x}{\lVert x\rVert}$, we get a positive quantity again since $|x^*x|>0$.
+			
+			\
+			Suppose $z\in \mathbb{C}^m$. Then
+			\begin{align*}
+				\lVert x + z\rVert' &= \sup_{\lVert y\rVert =1}|y^*(x+z)|\\
+				&=\sup_{\lVert y\rVert =1}|y^*x + y^*z|\\
+				&\leq \sup_{\lVert y\rVert=1}\left(|y^*x| + |y^*z|\right)\\
+				&\leq \sup_{\lVert y\rVert=1}|y^*x| + \sup_{\lVert y\rVert=1} |y^*z|\\
+				&=\lVert x\rVert' + \lVert z\rVert'
+			\end{align*}
+			where the first inequality follows from triangle inequality (which is satisfied by the absolute
+			value), and the last inequality follows from the fact that the supremum of a sum is the sum of the
+			supremums. Finally, if $\alpha\in\mathbb{C}$, we have
+			\begin{align*}
+				\lVert \alpha x\rVert'&=\sup_{\lVert y\rVert=1}|y^*(\alpha x)|\\
+				&=\sup_{\lVert y\rVert=1}|(\alpha|\cdot |y^* x|)\\
+				&=\alpha\cdot \sup_{\lVert y\rVert=1} |y^*x|\\
+				&=\alpha \cdot \lVert x\rVert'
+			\end{align*}
+			We conclude that $\lVert \cdot\rVert'$ is a norm.
+		\end{proof}
+		\item \begin{proof}
+			Let $z=x$. Then
+			\begin{align*}
+				Bx &= (yz^*)x =y(z^*x)=y(x^*x)=y\cdot\lVert x\rVert^2=y\cdot 1=y
+			\end{align*}
+			Moreover, if $u\in \mathbb{C}^m$ is nonzero, then there is $v\in\mathbb{C}^m$ such that
+			$|v^*u|=\lVert v\rVert'\cdot \lVert u\rVert$. Thus,
+			\begin{align*}
+				\lVert Bu\rVert &= \lVert yz^*u\rVert\\
+				&=|z^*u|\cdot \lVert y\rVert\\
+				&=\frac{|z^*u|}{|v^*u|}\cdot |v^*u| \cdot \lVert y\rVert\\
+				&=\frac{|z^*u|}{|v^*u|}\cdot \lVert v\rVert'\cdot\lVert u\rVert\cdot  \lVert y\rVert\\
+				&=\left(\frac{|z^*u|}{|v^*u|}\cdot \lVert v\rVert'\cdot  \lVert y\rVert\right)\cdot \lVert u\rVert\\
+				&=\left(\frac{|z^*u|}{|v^*u|}\cdot \lVert v\rVert'\right)\cdot \lVert u\rVert
+			\end{align*}
+			Hence,
+			\[
+			\lVert B\rVert \leq \frac{|z^*u|}{|v^*u|}\cdot \lVert v\rVert'
+			\]
+			for all $u$. In particular we attain equality if we let $u=x$, since
+			\begin{align*}
+				\lVert Bx\rVert &= \lVert y\rVert = \lVert x\rVert\\
+				\frac{x^*x}{|v^*\cdot x|}\cdot \lVert v\rVert' &= \frac{x^*x}{\lVert v\rVert'\cdot \lVert x\rVert}
+				\cdot \lVert v\rVert'=\frac{x^*x}{\lVert x\rVert}=1
+			\end{align*}
+			Hence we deduce that $\lVert B\rVert=1$.
+		\end{proof}
+	\end{enumerate}
+\end{sol}
+
+\end{document}
