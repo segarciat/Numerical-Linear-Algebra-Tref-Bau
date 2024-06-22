@@ -1,0 +1,366 @@
+ % --------------------------------------------------------------
+% Based on a homework template by Dana Ernst (MTH320 Homework
+% template on Overleaf).
+% --------------------------------------------------------------
+
+\documentclass[12pt]{article}
+
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{mathdots}
+% https://tex.stackexchange.com/questions/146306/how-to-make-horizontal-lists
+\usepackage[inline]{enumitem} % allows using letters in enumerate list environment
+\usepackage[mathscr]{euscript}
+% source: https://stackoverflow.com/questions/3175105/inserting-code-in-this-latex-document-with-indentation
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+	language=C, % language for code listing
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=4
+}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newenvironment{ex}[2][Exercise]{\begin{trivlist}
+		\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\newenvironment{sol}[1][Solution]{\begin{trivlist}
+		\item[\hskip \labelsep {\bfseries #1:}]}{\end{trivlist}}
+
+
+\begin{document}
+
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+
+\noindent Sergio Garcia Tapia \hfill
+
+\noindent{\small Numerical Linear Algebra, Lloyd Trefethen and David Bau III} \hfill 
+
+\noindent{\small Lecture 6: Projectors} \hfill 
+
+\noindent\today
+\section*{Lecture 6: Projectors}
+
+\begin{ex}{1}
+	If $P$ is an orthogonal projector, then $I-2P$ is unitary. Prove this algebraically, and
+	give a geometric interpretation.
+\end{ex}
+
+\begin{sol}
+	\
+	\begin{proof}
+		A projector satisfies $P^2=P$ and by Theorem 6.1, a projector $P$ is orthogonal if and only if $P=P^*$,
+		meaning it is hermitian (self-adjoint). To show that $(I-2P)$ is unitary, we need to show that
+		 $(I-2P)^*=(I-2P)^{-1}$:
+		\begin{align*}
+			(I-2P)^*(I-2P)&=(I^*-2P^*)(I-2P)\\
+			&=I^*I-2I^*P-2P^*I+4P^*P\\
+			&=I-2P-2P+4P^2\\
+			&=I-4P+4P\\
+			&=I
+		\end{align*}
+		As for the geometric interpretation, it becomes clearer if we re-write $I-2P=(I-P)-P$. The operator
+		$I-P$ is the complementary projection of $P$. The operator $I-P$ projects onto $\text{null }P$ along
+		$\text{range }P$, whereas $-P$ projects onto $\text{range }P$ along $\text{null }P$. However, unlike
+		$P$, the operator $-P$ reflects every vector in $\text{range }P$.
+	\end{proof}
+\end{sol}
+
+\begin{ex}{2}
+	Let $E$ be the $m\times m$ matrix that extracts the ``even part" of an $m$-vector: $Ex=(x+Fx)/2$, where
+	$F$ is the $m\times m$ matrix that flips $(x_1,\ldots,x_m)^*$ to $(x_m,\ldots,x_1)^*$. Is $E$ an
+	orthogonal projector, an oblique projector, or not a projector at all? What are its entries?
+\end{ex}
+
+\begin{sol}
+	\
+	It is an orthogonal projector. To see this, first note that the matrix $F$ is self-adjoint (hermitian).
+	If $e_1,\ldots,e_m$ represent the standard basis of $\mathbb{C}^m$, then
+	\begin{align*}
+		F=\begin{bmatrix}
+			\vdots & \cdots & \vdots\\
+			e_m & \cdots & e_1\\
+			\vdots & \cdots & \vdots
+		\end{bmatrix}
+		=\begin{bmatrix}
+			0  & \cdots & 0 & 1\\
+			\vdots & \cdots & 1 & 0\\
+			0 & \iddots & \cdots &\vdots\\
+			1 & 0 & \cdots & 0
+		\end{bmatrix}
+	\end{align*}
+	Moreover its columns are orthonormal so $F$ is unitary, and hence $F^*=F^{-1}$. Since $E=\frac{1}{2}(I+F)$,
+	we get
+	\begin{align*}
+		E^2&=\frac{1}{4}(I+F)^2\\
+		&=\frac{1}{4}(I^2+I\circ F+F\circ I+F\circ F)\\
+		&=\frac{1}{4}(I+F+F+I)\\
+		&=\frac{1}{4}(2I+2F)\\
+		&=\frac{1}{2}(I+F)\\
+		&=E
+	\end{align*}
+	It is orthogonal since
+	\begin{align*}
+		E^*&=\frac{1}{2}(I+F)^*\\
+		&=\frac{1}{2}(I^*+F^*)\\
+		&=\frac{1}{2}(I+F)\\
+		&=E
+	\end{align*}
+\end{sol}
+
+\begin{ex}{3}
+	Given $A\in\mathbb{C}^{m\times n}$ with $m\geq n$, show that $A^*A$ is nonsingular if and only if $A$
+	has full rank.
+\end{ex}
+
+\begin{sol}
+	\
+	\begin{proof}
+		(``$\implies$"): Suppose that $A^*A$ is nonsingular. By Theorem 1.3, the eigenvalues of $A^*A$ are
+		nonzero. The eigenvalues of $A^*A$ are the singular values of $A$, and since $A^*A\in\mathbb{C}^{n\times n}$,
+		there are $n$ nonzero singular values. By Theorem 5.1, the rank of $A$ is the number of nonzero singular
+		values, and hence $\text{rank}(A)=n$, meaning $A$ is full rank.
+		
+		\
+		(``$\impliedby$"): Suppose $A$ has full rank. By Theorem 1.3, $0$ is not a singular value of $A$.
+		The singular values of $A$ are the eigenvalues of $A^*A$, and hence $A^*A$ does not have any zero
+		eigenvalues. By Theorem 1.3 again, we conclude that $A^*A$ is nonsingular.
+		
+		\
+		Put another way, since $A$ has full rank, its column and null space have dimension $n$, which means
+		that the column and null space of $A^*$ also has dimension $n$. In particular, $\text{null }A=\text{null }A^*=\{0\}$, and hence their product $A^*A$ has null space $\{0\}$, so it has full rank.
+	\end{proof}
+\end{sol}
+
+\begin{ex}{4}
+	Consider the matrices
+	\begin{align*}
+		A&=\begin{bmatrix}
+			1 & 0\\
+			0 & 1\\
+			1 & 0
+		\end{bmatrix}
+		\quad\quad
+		B=\begin{bmatrix}
+			1 & 2\\
+			0 & 1\\
+			1 & 0
+		\end{bmatrix}
+	\end{align*}
+	Answer the following questions by hand calculation.
+	\begin{enumerate}[label=(\alph*)]
+		\item What is the orthogonal projector $P$ onto $\text{range }(A)$, and what is the image under $P$
+		of the vector $(1,2,3)^*$?
+		\item Same questions for $B$.
+	\end{enumerate}
+\end{ex}
+
+\begin{sol}
+	\
+	\begin{enumerate}[label=(\alph*)]
+		\item Matrix $A$ has two columns, and they are linearly independent because they are not a scalar
+		multiple of one another. The vector $v=(1,2,3)^*$ is not in $\text{range }(A)$, but we learned in
+		Lecture 6 that if $y\in\text{range}(A)$ is its orthogonal projection onto $\text{range }(A)$, then
+		$y-v$ is orthogonal to $\text{range}(A)$. Hence all columns of $A$ must be orthogonal to $y-v$,
+		and in particular since $y=Ax$ for some $x\in \mathbb{C}^{3\times 3}$, the solution we expect is
+		\begin{align*}
+			x=(A^*A)^{-1}Av
+		\end{align*}
+		where the orthogonal projector is
+		\begin{align*}
+			P=A(A^*A)^{-1}A^*
+		\end{align*}
+		Thus,
+		\begin{align*}
+			A^*&=\begin{bmatrix}
+				1 & 0 & 1\\
+				0 & 1 & 0
+			\end{bmatrix}\\
+			A^*A&=\begin{bmatrix}
+				1 & 0 & 1\\
+				0 & 1 & 0
+			\end{bmatrix}
+			\begin{bmatrix}
+				1 & 0\\
+				0 & 1\\
+				1 & 0
+			\end{bmatrix}\\
+			&=\begin{bmatrix}
+				2 & 0\\
+				0 & 1
+			\end{bmatrix}\\
+			P&=A(A^*A)^{-1}A^*\\
+			&=\begin{bmatrix}
+				1 & 0 \\
+				0 & 1 \\
+				1 & 0
+			\end{bmatrix}
+			\begin{bmatrix}
+				\frac{1}{2} & 0\\
+				0 & 1
+			\end{bmatrix}
+			\begin{bmatrix}
+				1 & 0 & 1\\
+				0 & 1 & 0
+			\end{bmatrix}\\
+			&=\begin{bmatrix}
+				\frac{1}{2} & 0\\
+				0 & 1\\
+				\frac{1}{2} & 0
+			\end{bmatrix}
+			\begin{bmatrix}
+				1 & 0 & 1\\
+				0 & 1 & 0
+			\end{bmatrix}\\
+			&=\begin{bmatrix}
+				\frac{1}{2} & 0 & \frac{1}{2}\\
+				0 & 1 & 0\\
+				\frac{1}{2} & 0 & \frac{1}{2}
+			\end{bmatrix}
+		\end{align*}
+		Note that this satisfies $P=P^*$ as expected, and its rank is $2$ just like that of $A$.
+		Now we can compute the image under $P$:
+		\begin{align*}
+			y&=Ax\\
+			&=A[(A^*A)^{-1}A^*v]\\
+			&=Pv\\
+			&=\begin{bmatrix}
+				\frac{1}{2} & 0 & \frac{1}{2}\\
+				0 & 1 & 0\\
+				\frac{1}{2} & 0 & \frac{1}{2}
+			\end{bmatrix}
+			\begin{bmatrix}
+				1\\
+				2\\
+				3
+			\end{bmatrix}\\
+			&=\begin{bmatrix}
+				2\\
+				2\\
+				2
+			\end{bmatrix}
+		\end{align*}
+		\item Similar to before, we compute
+		\begin{align*}
+			B^*&=\begin{bmatrix}
+				1 & 0 & 1\\
+				2 & 1 & 0
+			\end{bmatrix}\\
+			B^*B&=\begin{bmatrix}
+				1 & 0 & 1\\
+				2 & 1 & 0
+			\end{bmatrix}
+			\begin{bmatrix}
+				1 & 2\\
+				0 & 1\\
+				1 & 0
+			\end{bmatrix}\\
+			&=\begin{bmatrix}
+				2 & 2\\
+				2 & 5
+			\end{bmatrix}\\
+			(B^*B)^{-1}&=
+			\frac{1}{6}
+			\begin{bmatrix}
+				5 & -2\\
+				-2 & 2
+			\end{bmatrix}\\
+			P&=B(B^*B)^{-1}B\\
+			&=\begin{bmatrix}
+				1 & 2\\
+				0 & 1\\
+				1 & 0
+			\end{bmatrix}
+			\cdot \frac{1}{6}
+			\begin{bmatrix}
+				5 & -2\\
+				-2 & 2
+			\end{bmatrix}
+			\begin{bmatrix}
+				1 & 0 & 1\\
+				2 & 1 & 0
+			\end{bmatrix}\\
+			&=\frac{1}{6}
+			\begin{bmatrix}
+				1 & 2 \\
+				-2 & 2\\
+				5 & -2
+			\end{bmatrix}
+			\begin{bmatrix}
+				1 & 0 & 1\\
+				2 & 1 & 0
+			\end{bmatrix}\\
+			&=\frac{1}{6}
+			\begin{bmatrix}
+				5 & 2 & 1\\
+				2 & 2 & -2\\
+				1 & -2 & 5
+			\end{bmatrix}
+		\end{align*}
+		Now we find that
+		\begin{align*}
+			y&=Pv\\
+			&=\frac{2}{15}\begin{bmatrix}
+				15\\
+				0\\
+				14
+			\end{bmatrix}
+		\end{align*}
+	\end{enumerate}
+\end{sol}
+
+\begin{ex}{5}
+	Let $P\in\mathbb{C}^{m\times m}$ be a nonzero projector. Show that $\lVert P\rVert_2\geq 1$, with the
+	equality if and only if $P$ is an orthogonal projector.
+\end{ex}
+
+\begin{sol}
+	\
+	\begin{proof}
+		Since $P$ is a projector, we know that $P^2=P$. If $v\neq 0\in \mathbb{C}^m$, then
+		\begin{align*}
+			\lVert Pv\rVert_2 = \lVert P^2v\rVert_2 = \lVert P(Pv)\rVert_2 \leq \lVert P\rVert_2\cdot \lVert Pv\rVert_2
+			\leq \lVert P\rVert_2\cdot \lVert P\rVert_2\cdot \lVert v\rVert_2=\lVert P\rVert_2^2\cdot \lVert v\rVert_2
+		\end{align*}
+		Hence $\lVert P\rVert_2\leq \lVert P\rVert_2^2$. Since $P$ is nonzero, this implies that $\lVert P\rVert_2\neq 0$.
+		If $x\leq x^2$ for $x\in\mathbb{R}$, then $x\geq 1$, so we conclude $\lVert P\rVert_2\geq 1$, as
+		we set out to show.
+		
+		\
+		If $P$ is an orthogonal projector, then there are subspaces $S_1,S_2$ of $\mathbb{C}^m$ such that
+		$S_1\perp S_2$ and $S_1+S_2=\mathbb{C}^m$ for which $P$ projects $S_1$ orthogonally along $S_2$.
+		It was shown in the proof of Theorem 6.1 that $P$ has a singular value decomposition of the form
+		$P=Q\Sigma Q^*$, where $Q$ is unitary and $\Sigma$ is a diagonal matrix whose entries are only 1s
+		and 0s. By Theorem 5.3, we learned that $\lVert P\rVert_2=\sigma_1$, where $\sigma_1$ is the largest
+		singular value of $P$. Since $\Sigma$ only has 1s and 0s on its diagonal, we conclude that
+		$\sigma_1=1$, and hence $\lVert P\rVert_2 = 1$.
+	\end{proof}
+\end{sol}
+
+\end{document}
