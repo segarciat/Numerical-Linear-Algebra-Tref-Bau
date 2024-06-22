@@ -1,0 +1,583 @@
+ % --------------------------------------------------------------
+% Based on a homework template by Dana Ernst (MTH320 Homework
+% template on Overleaf).
+% --------------------------------------------------------------
+
+\documentclass[12pt]{article}
+
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+% https://tex.stackexchange.com/questions/146306/how-to-make-horizontal-lists
+\usepackage[inline]{enumitem} % allows using letters in enumerate list environment
+\usepackage[mathscr]{euscript}
+% source: https://stackoverflow.com/questions/3175105/inserting-code-in-this-latex-document-with-indentation
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+	language=C, % language for code listing
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=4
+}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newenvironment{ex}[2][Exercise]{\begin{trivlist}
+		\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\newenvironment{sol}[1][Solution]{\begin{trivlist}
+		\item[\hskip \labelsep {\bfseries #1:}]}{\end{trivlist}}
+
+
+\begin{document}
+
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+
+\noindent Sergio Garcia Tapia \hfill
+
+\noindent{\small Numerical Linear Algebra, Lloyd Trefethen and David Bau III} \hfill 
+
+\noindent{\small Lecture 5: More on the SVD} \hfill 
+
+\noindent\today
+\section*{Lecture 5: More on the SVD}
+
+\begin{ex}{1}
+	In Example 3.1, we considered the matrix (3.7) and asserted, among other things, that its 2-norm is
+	approximately $2.9208$. Using the SVD, work out (on paper) the exact values of $\sigma_{\text{min}}(A)$ and
+	$\sigma_{\text{max}}(A)$.
+\end{ex}
+
+\begin{sol}
+	\
+	The matrix in question is
+	\[
+	A = \begin{bmatrix}
+		1 & 2\\
+		0 & 2
+	\end{bmatrix}
+	\]
+	By Theorem 5.4, the nonzero singular values of $A$ are the square roots of the eigenvalues of $A^*A$ and $AA^*$
+	(these matrices have the same eigenvalues). Thus we proceed to find eigenvalues of $A^*A$
+	\begin{align*}
+		A^*A = 
+		\begin{bmatrix}
+			1 & 0\\
+			2 & 2
+		\end{bmatrix}
+		\begin{bmatrix}
+			1 & 2\\
+			0 & 2
+		\end{bmatrix}
+		=\begin{bmatrix}
+			1 & 2\\
+			2 & 8
+		\end{bmatrix}
+	\end{align*}
+	Now we find its eigenvalues which will be the values $\lambda$ such that $A^*A-\lambda I$ is singular.
+	That is, we want $(A^*A-\lambda I)v=0$ for nonzero $v\in\mathbb{C}^2$:
+	\begin{align*}
+		0=(A^*A-\lambda I)v=\begin{bmatrix}
+			1-\lambda & 2\\
+			2 & 8-\lambda
+		\end{bmatrix}
+		\begin{bmatrix}
+			x\\
+			y
+		\end{bmatrix}
+	\end{align*}
+	This is equivalent to the system:
+	\begin{align*}
+		0 &= (1-\lambda)x + 2y\\
+		0 &= 2x + (8-\lambda)y
+	\end{align*}
+	We can multiply the second equation by $-\frac{1-\lambda}{2}$ and add it to the first to get:
+	\begin{align*}
+		0 &= 0x +\left(2-\frac{1}{2}(1-\lambda)(8-\lambda)\right)y\\
+		0 &= 2x + (8-\lambda)y
+	\end{align*}
+	This will have nonzero solutions if $2-\frac{1}{2}(1-\lambda)(8-\lambda)=0$, which is equivalent
+	to the quadratic equation $\lambda^2-9\lambda+4=0$. The solutions can be obtained using the quadratic
+	formula, and they are
+	\begin{align*}
+		\lambda_{\pm} &= \frac{9\pm \sqrt{65}}{2}
+	\end{align*}
+	Both are positive, as expected because $A^*A$ is invertible so it has nonzero eigenvalues, and it is
+	also a positive semidefinite operator, so its eigenvalues must be nonnegative. Now
+	\[
+	\sigma_{\text{min}} = \sqrt{\frac{9-\sqrt{65}}{2}},\quad \sigma_{\text{max}}=\sqrt{\frac{9+\sqrt{65}}{2}}
+	\approx 2.9208
+	\]
+\end{sol}
+
+\begin{ex}{5.2}
+	Using the SVD prove that any matrix in $\mathbb{C}^{m\times n}$ is the limit of a sequence of matrices of
+	full rank. In other words, prove that the set of full-rank matrices is a dense subset of $\mathbb{C}^{m\times n}$.
+	Using the 2-norm for your proof. (The norm doesn't matter, since all norms on a finite-dimensional
+	space are equivalent).
+\end{ex}
+
+\begin{sol}
+	\
+	\begin{proof}
+		Let $A\in\mathbb{C}^{m\times n}$. 
+	\end{proof}
+\end{sol}
+
+\begin{ex}{5.3}
+	Consider the matrix
+	\[
+	A=\begin{bmatrix}
+		-2 & 11\\
+		-10 & 5
+	\end{bmatrix}
+	\]
+	\begin{enumerate}
+		\item Determine, on paper, a real SVD of $A$ in the form $A=U\Sigma V^T$. The SVD is not unique, so
+		find one that has the minimal number of minus signs in $U$ and $V$.
+		\item List the singular values, left singular vectors, and right singular vectors of $A$. Draw a
+		careful, labeled picture of the unit ball in $\mathbb{R}^2$ and its image under $A$, together with
+		the singular vectors, with the coordinates of their vertices marked.
+		\item What are the 1-, 2-, $\infty$- and Frobenius norms of $A$?
+		\item Find $A^{-1}$ not directly, but via the SVD.
+		\item Find the eigenvalues $\lambda_1$, $\lambda_2$ of $A$.
+		\item Verify that $\det A=\lambda_1\lambda_2$ and $|\det A|=\sigma_1\sigma_2$.
+		\item What is the area of the ellipsoid into which $A$ maps the unit ball of $\mathbb{R}^2$?
+	\end{enumerate}
+\end{ex}
+
+\begin{sol}
+	\
+	\begin{enumerate}[label=(\alph*)]
+		\item The matrix $A$ is nonsingular and thus its singular values are all nonzero. By Theorem 5.4,
+		the nonzero singular values of $A$ are the square roots of the nonzero eigenvalues of $A^*A$ or $AA^*$.
+		Moreover, suppose that $A=U\Sigma V^*$, so that $A^*A=V\Sigma^2V^*$. Then the eigenvectors of
+		$A^*A$ are the right singular vectors of $A$. Similarly, the eigenvectors of $AA^*$ are the left
+		singular vectors of $A$. Thus we begin by finding the eigenvalues of $A^*A$:
+		\begin{align*}
+			A^*A =
+			\begin{bmatrix}
+				-2 & -10\\
+				11 & 5
+			\end{bmatrix}
+			\begin{bmatrix}
+				-2 & 11\\
+				-10 & 5
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+				104 & -72\\
+				-72 & 146
+			\end{bmatrix}
+		\end{align*}
+		If $\lambda$ is an eigenvalue of $A^*A$, then $A^*A-\lambda I$ is singular, which means that
+		$(A^*A-\lambda I)v=0$ has a nonzero solution $v\in\mathbb{C}^2$:
+		\begin{align*}
+			0 =(A^*v-\lambda I)v= \begin{bmatrix}
+				104-\lambda & -72\\
+				-72 & 146-\lambda
+			\end{bmatrix}
+			\begin{bmatrix}
+				x\\
+				y
+			\end{bmatrix}
+		\end{align*}
+		Hence we have the system
+		\begin{align*}
+			0&=(104-\lambda)x -72y\\
+			0 &= -72x + (146-\lambda)y
+		\end{align*}
+		We can multiply the second equation by $\frac{1}{72}(104-\lambda)$ and add it to the first to
+		get
+		\begin{align*}
+			0 &= 0x +\left(\frac{1}{72}(104-\lambda)(146-\lambda)-72\right)y \\
+			0 &= -72x + (146-\lambda)y
+		\end{align*}
+		This equation will have nonzero solutions if
+		\begin{align*}
+			\frac{1}{72}(104-\lambda)(146-\lambda)-72&=0
+		\end{align*}
+		which simplifies to
+		\begin{align*}
+			\lambda^2-250\lambda +10000&=0
+		\end{align*}
+		The solutions are
+		\begin{align*}
+			\sigma_{1}^2 = 200,\quad \sigma_2^2 = 50
+		\end{align*}
+		Thus $\sigma_1 =\sqrt{200}=10\sqrt{2}$, and $\sigma_2==\sqrt{50}=5\sqrt{2}$.
+		Now to find the eigenvectors, we substitute $\sigma_1^2$ and $\sigma_2^2$ in our equation
+		\begin{align*}
+			0 &= 0x +\left(\frac{1}{72}(104-\lambda)(146-\lambda)-72\right)y \\
+			0 &= -72x + (146-\lambda)y
+		\end{align*}
+		Since $\sigma_1^2$ and $\sigma_2^@$ both make the coefficient of $y$ in the first equation 0,
+		this implies that $72x=(146-\lambda_j)y$. If we let $y=72$, then
+		\begin{align*}
+			\sigma_1^2&=200\to \begin{bmatrix}
+				-54\\
+				72
+			\end{bmatrix}
+			\quad\implies\quad v_1=\frac{1}{90}
+			\begin{bmatrix}
+				-54\\
+				72
+			\end{bmatrix}
+			=\frac{1}{5}\begin{bmatrix}
+				-3\\
+				4
+			\end{bmatrix}
+			\\
+			\sigma_2^2&=50\to
+			\begin{bmatrix}
+				96\\
+				72
+			\end{bmatrix}
+			\quad \implies\quad 
+			v_2=
+			\frac{1}{120}
+			\begin{bmatrix}
+				96\\
+				72
+			\end{bmatrix}
+			=\frac{1}{5}\begin{bmatrix}
+				4 \\
+				3
+			\end{bmatrix}
+		\end{align*}
+		Here $v_1,v_2$ is an orthonormal list. Next we find the eigenvectors of $AA^*$, using the fact that
+		the eigenvalues are the same as those of $A^*A$. We begin by computing $AA^*$:
+		\begin{align*}
+			AA^*=
+			\begin{bmatrix}
+				-2 & 11\\
+				-10 & 5
+			\end{bmatrix}
+			\begin{bmatrix}
+				-2 & -10\\
+				11 & 5
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+				125 & 75\\
+				75 &  125
+			\end{bmatrix}
+		\end{align*}
+		Now we find eigenvectors by finding the nonzero solutions to:
+		\begin{align*}
+			0&=(AA^*-\sigma_1^2 I)v=\begin{bmatrix}
+				-75 & 75\\
+				75 & -75
+			\end{bmatrix}\begin{bmatrix}
+			x\\
+			y
+		\end{bmatrix}\\
+		0&=(AA^*-\sigma_2^2 I)v=\begin{bmatrix}
+			75 & 75\\
+			75 & 75
+		\end{bmatrix}\begin{bmatrix}
+			x\\
+			y
+		\end{bmatrix}
+		\end{align*}
+		The first system has the nontrivial solution $x=y=1$, and the second system has the nontrivial solution
+		$x=1$ and $y=-1$. Thus
+		\begin{align*}
+			u_1 &=\frac{1}{\sqrt{2}} \begin{bmatrix}
+				1\\
+				1
+			\end{bmatrix}
+			\quad
+			u_2 = \frac{1}{\sqrt{2}}\begin{bmatrix}
+				1 \\
+				-1
+			\end{bmatrix}
+		\end{align*}
+		is an orthonormal list of eigenvectors of $AA^*$. Now we let $U$ be the matrix whose columns are $u_1$ and $u_2$,
+		let $V$ be the matrix whose columns are $v_1$ and $v_2$, and let $\Sigma$ be the matrix whose diagonal
+		entries are $\sigma_1=\sqrt{200}$ and $\sigma_2=\sqrt{50}$, then $U\Sigma V^*$ is an SVD of $A$. To see
+		this, we can multiply them
+		\begin{align*}
+			U\Sigma V^*&=\frac{1}{\sqrt{2}}\begin{bmatrix}
+				1 & 1\\
+				1 & -1
+			\end{bmatrix}
+			\begin{bmatrix}
+				\sqrt{200} & 0\\
+				0 & \sqrt{50}
+			\end{bmatrix}
+			\cdot \frac{1}{5}\begin{bmatrix}
+				-3 & 4\\
+				4 & 3
+			\end{bmatrix}\\
+		&=\begin{bmatrix}
+			1 & 1\\
+			1 & -1
+		\end{bmatrix}
+		\begin{bmatrix}
+			2 & 0\\
+			0 & 1
+		\end{bmatrix}
+		\begin{bmatrix}
+			-3 & 4\\
+			4 & 3
+		\end{bmatrix}\\
+		&=A
+		\end{align*}
+		\item The singular value of $A$ are
+		\[
+		\sigma_1=\sqrt{200},\quad \sigma_2=\sqrt{50}
+		\]
+		The left singular vectors are
+		\begin{align*}
+			u_1&=\frac{1}{\sqrt{2}}
+			\begin{bmatrix}
+				1\\
+				1
+			\end{bmatrix}
+			\quad 
+			u_2=\frac{1}{\sqrt{2}}
+			\begin{bmatrix}
+				1\\
+				-1
+			\end{bmatrix}
+		\end{align*}
+		The right singular vectors are
+		\begin{align*}
+			v_1&=\frac{1}{5}
+			\begin{bmatrix}
+				-3\\
+				4
+			\end{bmatrix}
+			\quad 
+			v_2=\frac{1}{5}
+			\begin{bmatrix}
+				4\\
+				3
+			\end{bmatrix}
+		\end{align*}
+		\item The 1-norm of $A$ is the largest 1-norm among its columns, by Example 3.3 (Equation 3.9).
+		Since $\lVert a_1\rVert_1 = |-2| + |-10| = 12$ and $\lVert a_2\rVert_1 = 11+5=17$, we see that
+		$\lVert A\rVert_1=17$. By Example 3.4, the infinity norm of $A$ is the largest 1-norm of its rows,
+		which is the largest of $|-10|+5$ and $|-2|+11$, and hence $\lVert A\rVert_\infty = 15$.
+		By Theorem 5.3, $\lVert A\rVert_2=\sigma_1=\sqrt{200}$, the largest singular value of $A$.
+		By the same Theorem, $\lVert A\rVert_F=\sqrt{\sigma_1^2+\sigma_2^2}=\sqrt{200+50}=\sqrt{250}$.
+		\item To find $A^{-1}$ we note that $U$ and $V^T$ are unitary and $\Sigma$ is diagonal, so
+		$A^{-1}=(V^*)^{-1}\Sigma^{-1}U^{-1}$, and hence $A^{-1}=V\Sigma^{-1}U^T$
+		\begin{align*}
+			A^{-1}&=\frac{1}{\sqrt{2}}\begin{bmatrix}
+				1 & 1\\
+				1 & -1
+			\end{bmatrix}
+			\begin{bmatrix}
+				\frac{1}{\sqrt{200}} & 0\\
+				0 & \frac{1}{\sqrt{50}}
+			\end{bmatrix}
+			\frac{1}{5}
+			\begin{bmatrix}
+				-3 & 4\\
+				4 & 3
+			\end{bmatrix}\\
+			&=\begin{bmatrix}
+				1 & 1\\
+				1 & -1
+			\end{bmatrix}
+			\begin{bmatrix}
+				\frac{1}{100} & 0\\
+				0 & \frac{1}{50}
+			\end{bmatrix}
+			\begin{bmatrix}
+				-3 & 4\\
+				4 & 3
+			\end{bmatrix}\\
+			&=\frac{1}{100}
+			\begin{bmatrix}
+				1 & 1\\
+				1 & -1
+			\end{bmatrix}
+			\begin{bmatrix}
+				1 & 0\\
+				0 & 2
+			\end{bmatrix}
+			\begin{bmatrix}
+				-3 & 4\\
+				4 & 3
+			\end{bmatrix}\\
+			&=\frac{1}{100}\begin{bmatrix}
+				5 & -11\\
+				10 & -2
+			\end{bmatrix}
+		\end{align*}
+		\item The eigenvalues of $A$ are the values that make $A-\lambda I$ a singular matrix. We want
+		nonzero solutions to
+		\begin{align*}
+			(A-\lambda I)v=\begin{bmatrix}
+				-2-\lambda& 11\\
+				-10 & 5-\lambda
+			\end{bmatrix}
+			\begin{bmatrix}
+				x\\
+				y
+			\end{bmatrix}
+		\end{align*}
+		We have the equations
+		\begin{align*}
+			0&=(-2-\lambda)x+11y\\
+			0&=-10x+(5-\lambda)y
+		\end{align*}
+		Multiplying the second equation by $\frac{1}{10}(-2-\lambda)$ and adding it to the first equation,
+		we get
+		\begin{align*}
+			0&=0x + \left(\frac{1}{10}(-2-\lambda)(5-\lambda)+11\right)y\\
+			0&=-10x + (5-\lambda)y
+		\end{align*}
+		The system will admit nontrivial solutions if
+		\begin{align*}
+			\frac{1}{10}(-2-\lambda)(5-\lambda)+11&=0\\
+			(-2-\lambda)(5-\lambda)+110&=0\\
+			-10-3\lambda+\lambda^2+110&=0\\
+			\lambda^2-3\lambda +100&=0\\
+		\end{align*}
+		which has solutions
+		\begin{align*}
+			\lambda_1&=\frac{3+i\sqrt{391}}{2},\quad \lambda_2=\frac{3-i\sqrt{391}}{2}
+		\end{align*}
+		Hence the eigenvalues are $\lambda_1=15$ and $\lambda_2=-8$.
+		\item $\det A=a_{11}\cdot a_{22}-a_{21}\cdot a_{12}=-2\cdot 5 - (-10)\cdot 11=-10+110 = 100$
+		This also equals $\lambda_1\cdot \lambda_2$ and $\sigma_1\cdot \sigma_2$.
+		\item The area of an ellipse is $A=\pi ab$, where $a$ and $b$ are the lengths of the ellipse axes.
+		Thus $A=\pi \cdot\sigma_1\cdot \sigma_2=\pi \cdot \sqrt{200}\cdot \sqrt{50}=100\pi$.
+	\end{enumerate}
+\end{sol}
+
+\begin{ex}{5.4}
+	Suppose $A\in\mathbb{C}^{m\times m}$ has an SVD $A=U\Sigma V^*$. Find an eigenvalue decomposition of the
+	$2m\times 2m$ hermitian matrix
+	\begin{align*}
+		\begin{bmatrix}
+			0 & A^*\\
+			A & 0
+		\end{bmatrix}
+	\end{align*}
+\end{ex}
+
+\begin{sol}
+	\
+	Let $x,y\in\mathbb{C}^m$ and set
+	\[
+	B=\begin{bmatrix}
+		0 & A^*\\
+		A & 0
+	\end{bmatrix}
+	\quad
+	z=\begin{bmatrix}
+		x\\
+		y
+	\end{bmatrix}
+	\]
+	That is, $z$ is the vector in $\mathbb{C}^{2m}$ with $x$ stacked on top of $y$ If $\lambda$ is an eigenvalue of $B$,
+	then
+	\begin{align*}
+		Bz&=\lambda z\\
+		\begin{bmatrix}
+			0 & A^*\\
+			A & 0
+		\end{bmatrix}
+		\begin{bmatrix}
+			x\\
+			y
+		\end{bmatrix}
+		&=
+		\lambda \begin{bmatrix}
+			x\\
+			y
+		\end{bmatrix}\\
+		\begin{bmatrix}
+			A^*y\\
+			Ax
+		\end{bmatrix}
+		&=
+		\lambda \begin{bmatrix}
+			x\\
+			y
+		\end{bmatrix}
+	\end{align*}
+	The equations $A^*y=\lambda x$ and $Ax=\lambda y$ reduce to $A^*Ax=\lambda^2x$ and $AA^*y=\lambda^2y$.
+	In other words, every eigenvalue of $A^*A$ is the square of an eigenvalue of $B$. Thus the eigenvalues
+	are $\sigma_1,-\sigma_1,\ldots,\sigma_n,-\sigma_n$. In particular, the eigenvectors of $B$ are the
+	left and right singular vectors stacked on top of each other, of the form
+	\begin{align*}
+		\begin{bmatrix}
+			v_j\\
+			u_j
+		\end{bmatrix}
+		\quad
+		\text{and}
+		\quad 
+		\begin{bmatrix}
+			v_j\\
+			-u_j
+		\end{bmatrix}
+	\end{align*}
+	where $j\in\{1,\ldots,m\}$. In particular,
+	\begin{align*}
+		\begin{bmatrix}
+			0 & A^*\\
+			A & 0
+		\end{bmatrix}
+		\begin{bmatrix}
+			v_j\\
+			u_j
+		\end{bmatrix}
+		&=\begin{bmatrix}
+			A^*u_j\\
+			Av_j
+		\end{bmatrix}
+		=\sigma_1\begin{bmatrix}
+			v_j\\
+			u_j
+		\end{bmatrix}\\
+		\begin{bmatrix}
+			0 & A^*\\
+			A & 0
+		\end{bmatrix}
+		\begin{bmatrix}
+			v_j\\
+			-u_j
+		\end{bmatrix}
+		&=\begin{bmatrix}
+			-A^*u_j\\
+			Av_j
+		\end{bmatrix}
+		=-\sigma_1\begin{bmatrix}
+			v_j\\
+			-u_j
+		\end{bmatrix}
+	\end{align*}
+\end{sol}
+
+\end{document}
