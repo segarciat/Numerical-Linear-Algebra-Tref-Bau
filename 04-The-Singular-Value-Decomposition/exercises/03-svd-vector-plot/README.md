@@ -29,31 +29,24 @@ $VENV_PATH/bin/pip install -U pip setuptools
 # Install poetry
 $VENV_PATH/bin/pip install poetry
 
-# Create symlink to the isolated poetry executable installed to .venv
-ln -s $VENV_PATH/bin/poetry ./poetry
-
 # Verify it works properly
 ./poetry --help
 ```
+
+The `poetry` file in this directory is a symbolic link to the `poetry` binary located
+at `$VENV/bin/poetry`.
 
 ### Initialize Project and Run
 
 Having setup the project, we can use poetry to install dependencies and run the script
 
 ```bash
-# Interactively create pyproject.toml
-./poetry init
-
-# Install dependencies specified, creates poetry.lock
+# Install dependencies specified specified by poetry.lock and pyproject.toml
 ./poetry install
 
-# Add and install dependencies after initial configuration
-# Use as an interactive backend for matplotlib when run from scripts instead of notebooks
-./poetry add PyQt6
-
-# Create script and populate with code
-vim plot-singular-vectors.py
-
 # Run script
-./poetry run python plot-singular-vectors.py
+./poetry run python main.py
+
+# Optionally provide a name of your choice to save the plot figures
+./poetry run python main.py plot-of-singular-vectors.png
 ```

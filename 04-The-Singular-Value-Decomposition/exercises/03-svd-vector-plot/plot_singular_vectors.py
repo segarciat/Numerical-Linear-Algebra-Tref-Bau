@@ -8,7 +8,8 @@ import matplotlib.patches
 def angle_from(v: np.array, u: np.array=None) -> float:
 	""" Computes angle between v and u. If u is not given, [0, 1] is assumed (angle from x-axis) """
 	if u is None:
-		u = np.array([0, 1])
+		u = np.zeros(v.shape)
+		u[0] = 1
 	v_norm = linalg.norm(v)
 	u_norm = linalg.norm(u)
 	return np.arccos(np.clip(np.dot(v / v_norm, u / u_norm), -1, 1)) # Clip to avoid rounding issues.
@@ -40,12 +41,11 @@ def plot_left_singular_vectors(U: np.array, s: np.array, ax: matplotlib.axes.Axe
 	# Extract and scale left singular vectors
 	sigma1, sigma2 = s
 	u1, u2 = U[:, 0], U[:, 1]
-	u1_scaled = u1 * sigma1
-	u2_scaled = u2 * sigma2
 	
 	# Plot ellipse
+	sigma2 = sigma2 if sigma2 > 0 else 1
 	origin = np.array([0, 0])
-	rotation_angle = angle_from(u2_scaled) * (180 / math.pi) # in degrees
+	rotation_angle = np.sign(u1[1]) * angle_from(u1) * (180 / math.pi) # in degrees
 	ax.axis('equal')
 	ellipse = matplotlib.patches.Ellipse(
 		xy=origin, width=2*sigma1, height=2*sigma2, angle=rotation_angle, fill=False
@@ -53,6 +53,8 @@ def plot_left_singular_vectors(U: np.array, s: np.array, ax: matplotlib.axes.Axe
 	ax.add_patch(ellipse)
 
 	# Plot left singular vectors
+	u1_scaled = u1 * sigma1
+	u2_scaled = u2 * sigma2
 	ax.quiver(0, 0, u1_scaled[0], u1_scaled[1], angles='xy', scale_units='xy',
 			scale=1, color=['r'], label='$\sigma_1 \cdot u_1$')
 	ax.quiver(0, 0, u2_scaled[0], u2_scaled[1], angles='xy', scale_units='xy',
@@ -61,14 +63,16 @@ def plot_left_singular_vectors(U: np.array, s: np.array, ax: matplotlib.axes.Axe
 	ax.set_title("Left singular vectors")
 
 
-def svd_and_plot(A : np.array, figname=None) -> None:
+def svd_and_plot(A : np.array, figure_save_path=None) -> None:
 	"""
-		Given matrix A, computes the SVD and plots the left and right singular vectors.
+		Given matrix 2-column matrix A, computes the SVD and plots the left and right singular vectors.
 		If figname is given, saves a file with that name. Otherwise displays the figure.
 	"""
 	U, s, Vt = linalg.svd(A)
 	fig, (ax1, ax2) = plt.subplots(1, 2)
 	plot_right_singular_vectors(Vt, ax1)
 	plot_left_singular_vectors(U, s, ax2)
-	fig.suptitle("Image of unit sphere under linear map")
+	fig.suptitle(f"Image of unit sphere under linear map, $\sigma_1={np.round(s[0], 4)}$, $\sigma_2={np.round(s[1], 4)}$")
+	if figure_save_path:
+		plt.savefig(figure_save_path)
 	plt.show()
