@@ -159,15 +159,15 @@
 		$\sigma_j$ is a nonzero singular value of $A$ if and only if $\frac{1}{\sigma_j}$ is a singular value
 		of $A^{-1}$.
 		
-		Since $A\in\mathbb{C}^{m\times m}$ has invertible, all of its singular values are nonzero, so
-		$\sigma_j>0$ for $j\in\{1,\ldots,m\}$. The singular values $\sigma_1,\ldots,\sigma_m$ are
-		conventionally listed in descending order, meaning that $\sigma_1\geq \sigma_2\geq \cdots\sigma_m$.
+		Since $A\in\mathbb{C}^{m\times m}$ is invertible, all of its singular values are nonzero, so
+		$\sigma_j>0$ for $j\in\{1,\ldots,m\}$. The singular values $\sigma_1,\ldots,\sigma_m$ of $A$ are
+		conventionally listed in descending order, meaning that $\sigma_1\geq \sigma_2\geq \cdots\geq\sigma_m$.
 		Thus, $\sigma_1$ is the value of the largest singular value  of $A$ and $\sigma_m$ is the value
 		of the smallest singular value of $A$.
 		
 		
 		By contrast, $\frac{1}{\sigma_1},\ldots,\frac{1}{\sigma_m}$ are the singular values of $A^{-1}$,
-		but this is list is given in ascending order. In other words, the largest  singular value of
+		but this list is given in ascending order. In other words, the largest  singular value of
 		$A^{-1}$ is $\frac{1}{\sigma_m}$. By Theorem 5.3, $\lVert A\rVert_2=\sigma_1$, where $\lVert\cdot\rVert_2$
 		is vector-induced matrix 2-norm, and $\sigma_1$ is the largest singular value of $A$. Thus,
 		applying the same Theorem to $A^{-1}$, we conclude that $\lVert A^{-1}\rVert_2 =\frac{1}{\sigma_m}$.
@@ -176,13 +176,15 @@
 		where $\lVert \cdot \rVert_\infty$ is the vector-induced matrix $\infty$-norm.
 		Let $(a^{-1}_k)^*$ denote the $k$-th row of $A^{-1}$, and recall also from Example 3.4 that
 		$\lVert A^{-1}\rVert_\infty=\max_{1\leq k\leq m}\lVert (a^{-1}_k)^*\rVert_1$, where
-		$\lVert \cdot\rVert_1$ is the vector $1$-norm. Then
+		$\lVert \cdot\rVert_1$ is the vector $1$-norm. Clearly the first row of $A^{-1}$ has the
+		largest $1$-norm. Then
 		\begin{align*}
 			\frac{1}{\sigma_m^2}&=\lVert A^{-1}\rVert_2\ ^2\\
 			&\geq \frac{1}{m}\left\lVert A^{-1}\right\rVert_\infty\ ^2\\
-			&=\frac{1}{m}\cdot \max_{1\leq i\leq m}\lVert (a_i^{-1})^*\rVert_1\\
+			&=\frac{1}{m}\cdot \max_{1\leq k\leq m}\lVert (a_k^{-1})^*\rVert_1\\
+			&=\frac{1}{m}\cdot \lVert (a_1^{-1})^*\rVert_1\\
 			&=\frac{1}{m}\left(1^2 + |-2| + |4|^2+\cdot+|(-2)^{m-1}|\right)^2\\
-			&=\frac{1}{m}\left(\cdot \sum_{k=0}^{m-1}2^k\right)^2\\
+			&=\frac{1}{m}\left(\cdot \sum_{j=0}^{m-1}2^j\right)^2\\
 			&=\frac{1}{m}(2^m-1)^2
 		\end{align*}
 		Rearranging and taking square roots on both sides, we get $\frac{1}{m}(2^m-1)\geq \sigma_m$,
